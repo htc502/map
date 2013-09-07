@@ -67,10 +67,16 @@ int pos(char *pmark){
     for(;i<NPATH;i++){
         if(pathdb[i] == NULL)
             break;
+        int len = strlen(pathdb[i]);
+        char *temp = (char*)malloc(sizeof(char)*len+1);
+        strcpy(temp,pathdb[i]);
         char *mark;
-        mark = strtok(pathdb[i],DELIM);
-        if(0 == strcmp(pmark,mark))
+        mark = strtok(temp,DELIM);
+        if(0 == strcmp(pmark,mark)){
+            free(temp);
             return(i);
+        }
+        free(temp);
     }
     return(-1);
 }

@@ -4,9 +4,9 @@
 #include <unistd.h>
 #include "pathmark.h"
 
-void help()
+void help(char *pname)
 {
-    fprintf(stdout,"map [marker] [path]\n");
+    fprintf(stdout,"%s [marker] [path]\n",pname);
 }
 int main(int argc, char **argv,char **envp)
 {
@@ -36,7 +36,7 @@ int main(int argc, char **argv,char **envp)
             char *rpath;
             rpath = realpath(path,NULL);
             if(NULL == rpath){
-                fprintf(stderr,"error get real path\n");
+                fprintf(stderr,"invalid path:%s to bookmark\n",path);
                 exit(-1);
             }
             add(mark,rpath);
@@ -45,7 +45,7 @@ int main(int argc, char **argv,char **envp)
             release();
             break;
         default:
-            help();
+            help(argv[0]);
             release();
             break;
     }
