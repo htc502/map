@@ -143,6 +143,9 @@ int updatedb(char *file){
     return(0);
 }
 void print(){
+    fprintf(stdout,"                   \n");
+    fprintf(stdout,"<<<<<<<<<<<<<<<<<<<\n");
+    fprintf(stdout,"(marker)     (Path)\n");
     int i = 0;
     for(;i<NPATH;i++){
         if(pathdb[i] == NULL)
@@ -150,7 +153,9 @@ void print(){
         char *mark,*path;
         mark = strtok(pathdb[i],DELIM);
         path = strtok(NULL,DELIM);
-        fprintf(stdout,"%s --- %s\n",mark,path);
+        fprintf(stdout,"%s <--- %s\n",mark,path);
     }
+    fprintf(stdout,">>>>>>>>>>>>>>>>>>>\n");
+    fprintf(stdout,"                   \n");
 }
 #endif
