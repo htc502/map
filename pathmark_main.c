@@ -6,7 +6,7 @@
 
 void help(char *pname)
 {
-    fprintf(stdout,"%s [marker] [path]\n",pname);
+    fprintf(stdout,"usage: %s [marker] [path]\n",pname);
 }
 int main(int argc, char **argv,char **envp)
 {
@@ -19,6 +19,7 @@ int main(int argc, char **argv,char **envp)
     load(db);
     switch(argc){
         case 1:
+            help(argv[0]);
             print();
             release();
             break;
