@@ -10,13 +10,16 @@ void help(char *pname)
 }
 int main(int argc, char **argv,char **envp)
 {
-    char dbfile[]=".pathmark.db";
+    char dbname[]=".pathmark.db";
     char *home = getenv("HOME");
-    char *db = strcat(home,"/");
-    db = strcat(db,dbfile);
-    char *path,*mark;
+    char *dbfile =(char*)malloc(sizeof(char)*MAX_PATHLEN);
+    strcat(dbfile,home);
+    strcat(dbfile,"/");
+    strcat(dbfile,dbname);
     init();
-    load(db);
+    load(dbfile);
+    char *xpath,*xmark;
+    const char *path;
     switch(argc){
         case 1:
             help(argv[0]);
@@ -24,7 +27,7 @@ int main(int argc, char **argv,char **envp)
             release();
             break;
         case 2:
-            path = grep(argv[1]);
+            path =  mark2path(argv[1]);
             if(path != NULL)
                 fprintf(stdout,"%s",path);
             else
@@ -32,16 +35,16 @@ int main(int argc, char **argv,char **envp)
             release();
             break;
         case 3:
-            mark = argv[1];
-            path = argv[2];
+            xmark = argv[1];
+            xpath = argv[2];
             char *rpath;
-            rpath = realpath(path,NULL);
+            rpath = realpath(xpath,NULL);
             if(NULL == rpath){
-                fprintf(stderr,"invalid path:%s to bookmark\n",path);
+                fprintf(stderr,"invalid path:%s to bookmark\n",xpath);
                 exit(-1);
             }
-            add(mark,rpath);
-            updatedb(db);
+            add(xmark,rpath);
+            updatedb(dbfile);
             free(rpath);
             release();
             break;
