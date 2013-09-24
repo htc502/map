@@ -150,15 +150,15 @@ int updatedb(char *file){
 }
 void print(){
     fprintf(stdout,"                   \n");
-    fprintf(stdout,"<<<<<<<<<<<<<<<<<<<\n");
-    fprintf(stdout,"[marker]     [Path]\n");
+    fprintf(stdout,"<<<<<<<<<<<<<<<<<<<<<<<\n");
+    fprintf(stdout,"[#] [marker]     [Path]\n");
     int i = 0;
     for(;i<NPATH;i++){
         if(pathdb[i][0] == NULL)
             break;
-        fprintf(stdout,"%i.%s <--- %s\n",i,pathdb[i][0],pathdb[i][1]);
+        fprintf(stdout,"[%i] %s <--- %s\n",i,pathdb[i][0],pathdb[i][1]);
     }
-    fprintf(stdout,">>>>>>>>>>>>>>>>>>>\n");
+    fprintf(stdout,">>>>>>>>>>>>>>>>>>>>>>>\n");
     fprintf(stdout,"                   \n");
 }
 #endif
