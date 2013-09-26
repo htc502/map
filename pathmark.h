@@ -36,6 +36,9 @@ int load(char * dbfile){
         char *mark,*path;
         mark = strtok(line,DELIM);
         path = strtok(NULL,DELIM);
+        /*this will not happen until u edit the pathmark.db mannually */
+        if (mark == NULL || path ==NULL)
+            continue;
         pathdb[i][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
         pathdb[i][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
         if (pathdb[i][0] == NULL || pathdb[i][1] == NULL){
