@@ -28,10 +28,10 @@ int main(int argc, char **argv,char **envp)
             break;
         case 2:
             /* in case u want to use the index */
+            /* index from 10-19 */
             if(strlen(argv[1]) == 2) {
-                char num = argv[1][0];
-                num += argv[1][1];
-                num -= 48;
+                char num = (argv[1][0] - 48)*10;
+                num += (argv[1][1]-48)*1;
                 if(num >= 0 && num <= 19){
                     path = pos2path(num);
                     if(path != NULL)
@@ -42,6 +42,7 @@ int main(int argc, char **argv,char **envp)
                     break;
                 }
             }
+            /* index from 0-9 */
             if(strlen(argv[1]) == 1) {
                 char num = argv[1][0];
                 num -= 48;
@@ -64,6 +65,7 @@ int main(int argc, char **argv,char **envp)
             release();
             break;
         case 3:
+            /* add a new mark */
             xmark = argv[1];
             xpath = argv[2];
             char *rpath;
