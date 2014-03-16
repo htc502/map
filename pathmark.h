@@ -5,163 +5,183 @@
 #include <string.h>
 
 #define MAX_PATHLEN 1000
-#define NPATH 20
+#define MAX_NPATH 20 /* max number of records */
 #define NFIELD 2
 #define DELIM "\t"
 
-static char *pathdb[NPATH][NFIELD];
+static struct {
+  char *pathdb[MAX_NPATH][NFIELD];
+  int NPATH;
+} db_object;
 
 void init(){
-    int i = 0;
-    for(;i<NPATH;i++){
-        int j = 0;
-        for(;j<NFIELD;j++){
-            pathdb[i][j]=NULL;
-        }
+  /* initialize db ram object */
+
+  db_object.NPATH = 0;
+  int i = 0;
+  for(;i<MAX_NPATH;i++){
+    int j = 0;
+    for(;j<NFIELD;j++){
+      db_object.pathdb[i][j]=NULL;
     }
+  }
 }
 
 int load(char * dbfile){
-    int updatedb(char *file);
-    FILE *pfile = fopen(dbfile,"rb");
-    if(pfile == NULL){
-        fprintf(stderr,"%s does not exist,will generate it automatically.\n",dbfile);
-        updatedb(dbfile);
-        exit(-1);
+  /* load dbfile into ram */
+
+  int writedb(char *file);
+
+  FILE *pfile = fopen(dbfile,"rb");
+  if(NULL == pfile){
+    fprintf(stderr,"%s does not exist,will generate it automatically.\n",dbfile);
+    writedb(dbfile); //write db_object to the file
+    exit(-1);
+  }
+
+  char line[MAX_PATHLEN];
+  int npath = 0;
+  while((NULL != fgets(line,MAX_PATHLEN,pfile) && (npath<MAX_NPATH))){
+    line[strlen(line)-1] = '\0';
+    char *pmark,*ppath;
+    pmark = strtok(line,DELIM);
+    ppath = strtok(NULL,DELIM);
+    /*this will not happen until u edit the pathmark.db mannually */
+    if (pmark == NULL || ppath ==NULL)
+      continue;
+
+    (db_object.pathdb)[npath][0]=(char*)malloc(sizeof(char)*strlen(pmark)+1);
+    (db_object.pathdb)[npath][1]=(char*)malloc(sizeof(char)*strlen(ppath)+1);
+    if ((db_object.pathdb)[npath][0] == NULL || (db_object.pathdb)[npath][1] == NULL){
+      fprintf(stderr,"error locating memories for map records %i\n",npath);
+      fclose(pfile);
+      return(-1);
     }
-    char line[MAX_PATHLEN];
-    int i = 0;
-    while((NULL != fgets(line,MAX_PATHLEN,pfile) && (i<NPATH))){
-        line[strlen(line)-1] = '\0';
-        char *mark,*path;
-        mark = strtok(line,DELIM);
-        path = strtok(NULL,DELIM);
-        /*this will not happen until u edit the pathmark.db mannually */
-        if (mark == NULL || path ==NULL)
-            continue;
-        pathdb[i][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
-        pathdb[i][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
-        if (pathdb[i][0] == NULL || pathdb[i][1] == NULL){
-            fprintf(stderr,"error locating memories for map records %i\n",i);
-            fclose(pfile);
-            return(-1);
-        }
-        strcpy(pathdb[i][0],mark);
-        strcpy(pathdb[i++][1],path);
-    }
-    fclose(pfile);
-    return(0);
+    strcpy((db_object.pathdb)[npath][0],pmark);
+    strcpy((db_object.pathdb)[npath++][1],ppath);
+  }
+  db_object.NPATH = npath;
+  fclose(pfile);
+  return(0);
 }
+
 int release(){
-    int i = 0;
-    for(;i<NPATH;i++){
-        int j = 0;
-        for(;j<NFIELD;j++){
-            free(pathdb[i][j]);
-        }
+  int i = 0;
+  for(;i < db_object.NPATH;i++){
+    int j = 0;
+    for(;j<NFIELD;j++){
+      free((db_object.pathdb)[i][j]);
     }
-    return(0);
+  }
+  return(0);
 }
 
 int pos(char *pmark){
-    int i = 0;
-    for(;i<NPATH;i++){
-        /* mark is empty means there is no record under this one, return */
-        if(pathdb[i][0] == NULL)
-            break;
-        if(0 == strcmp(pmark,pathdb[i][0])){
-            return(i);
-        }
-    }
-    return(-1);
+  /* return the index of a mark */
+  int i = 0;
+  while(i<db_object.NPATH){
+    if(0 == strcmp(pmark,(db_object.pathdb)[i][0]))
+      return(i);
+    i++;
+  }
+  return(-1);
 }
 
 const char* mark2path(char *pmark){
-    int position = pos(pmark);
-    if(position == -1)
-        return NULL;
-    return((const char*) pathdb[position][1]);
+  int position = pos(pmark);
+  if(position == -1)
+    return NULL;
+  return((const char*) (db_object.pathdb)[position][1]);
 }
+
 const char* pos2path(int pos){
-    if(pos >= NPATH || pos < 0)
-        return NULL;
-    return((const char*) pathdb[pos][1]);
+  if(pos > db_object.NPATH - 1 || pos < 0)
+    return NULL;
+  return((const char*) (db_object.pathdb)[pos][1]);
 }
 
 int add(char *mark,char *path){
-    int ind = pos(mark);
-    if(ind != -1){
-        int j = 0;
-        for(;j<NFIELD;j++){
-            free(pathdb[ind][j]);
-        }
-        strcpy(pathdb[ind][0],mark);
-        strcpy(pathdb[ind][1],path);
+  /* add a record */
 
-        return(0);
+  /* check the mark already exists */
+  int ind = pos(mark);
+  if(ind != -1){
+    int j = 0;
+    for(;j<NFIELD;j++){
+      free((db_object.pathdb)[ind][j]);
     }
-    /* a new bookmark, try to append this mark */
-    int i = 0;
-    for(;i != NPATH;i++){
-        if(pathdb[i][0] == NULL){
-            pathdb[i][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
-            pathdb[i][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
-            strcpy(pathdb[i][0],mark);
-            strcpy(pathdb[i][1],path);
-            return(0);
-        }
-    }
-    /* dbfile is full, remove the oldest one */
+    strcpy((db_object.pathdb)[ind][0],mark);
+    strcpy((db_object.pathdb)[ind][1],path);
+    return(0);
+  }
+
+  /* a new bookmark, try to append this mark */
+
+  /* dbfile is full, remove the oldest one */
+  if (db_object.NPATH  == MAX_NPATH ) {
     int j = 1;
-    for(;j<NPATH;j++){
-        int f=0;
-        for(;f<NFIELD;f++){
-            pathdb[j-1][f] = pathdb[j][f];
-        }
+    for(;j<MAX_NPATH;j++){
+      int f=0;
+      for(;f<NFIELD;f++){
+	(db_object.pathdb)[j-1][f] = (db_object.pathdb)[j][f];
+      }
     }
-    strcpy(pathdb[NPATH-1][0],mark);
-    strcpy(pathdb[NPATH-1][1],path);
+    strcpy((db_object.pathdb)[MAX_NPATH-1][0],mark);
+    strcpy((db_object.pathdb)[MAX_NPATH-1][1],path);
     return(0);
+  }
+  /* just add to the tail */
+  else {
+    int i = db_object.NPATH;
+    (db_object.pathdb)[i][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
+    (db_object.pathdb)[i][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
+    strcpy((db_object.pathdb)[i][0],mark);
+    strcpy((db_object.pathdb)[i][1],path);
+    /* NPATH plus 1 */
+    db_object.NPATH++;
+    return(0);
+  }
+  
+  /* there is something unconsiderible happened*/
+  return(-1);
+}
 
-}
-int updatedb(char *file){
-    int i = 0;
-    FILE *pfile = fopen(file,"w");
-    if(NULL == pfile){
-        fprintf(stderr,"error opening dbfile %s\n",file);
-        return(-1);
+int writedb(char *file){
+  /* write ram db object to file */
+  int i = 0;
+  FILE *pfile = fopen(file,"w");
+  if(NULL == pfile){
+    fprintf(stderr,"error opening dbfile %s\n",file);
+    return(-1);
+  }
+  for(;i<db_object.NPATH;i++){
+    char *line = (char*) malloc(sizeof(char)*MAX_PATHLEN);
+    int f=0;
+    for(;f<NFIELD;f++){
+      if(f != 0)
+	strcat(line,DELIM);
+      strcat(line,(db_object.pathdb)[i][f]);
     }
-    for(;i<NPATH;i++){
-        if(pathdb[i][0] == NULL)
-            break;
-        char *line = (char*) malloc(sizeof(char)*MAX_PATHLEN);
-        int f=0;
-        for(;f<NFIELD;f++){
-            if(f != 0)
-                strcat(line,DELIM);
-            strcat(line,pathdb[i][f]);
-        }
-        if(fputs(line,pfile) == EOF){
-            fprintf(stderr,"error writing %ith records\n",i);
-            fclose(pfile);
-            return(-1);
-        }
-        fputs("\n",pfile);
+    if(fputs(line,pfile) == EOF){
+      fprintf(stderr,"error writing %ith records\n",i);
+      fclose(pfile);
+      return(-1);
     }
-    fclose(pfile);
-    return(0);
+    fputs("\n",pfile);
+  }
+  fclose(pfile);
+  return(0);
 }
+
 void print(){
-    fprintf(stdout,"                   \n");
-    fprintf(stdout,"<<<<<<<<<<<<<<<<<<<<<<<\n");
-    fprintf(stdout,"[#] [marker]     [Path]\n");
-    int i = 0;
-    for(;i<NPATH;i++){
-        if(pathdb[i][0] == NULL)
-            break;
-        fprintf(stdout,"[%i] %s <--- %s\n",i,pathdb[i][0],pathdb[i][1]);
-    }
-    fprintf(stdout,">>>>>>>>>>>>>>>>>>>>>>>\n");
-    fprintf(stdout,"                   \n");
+  fprintf(stdout,"                   \n");
+  fprintf(stdout,"<<<<<<<<<<<<<<<<<<<<<<<\n");
+  fprintf(stdout,"[#] [marker]     [Path]\n");
+  int i = 0;
+  for(;i<db_object.NPATH;i++){
+    fprintf(stdout,"[%i] %s <--- %s\n",i,(db_object.pathdb)[i][0],(db_object.pathdb)[i][1]);
+  }
+  fprintf(stdout,">>>>>>>>>>>>>>>>>>>>>>>\n");
+  fprintf(stdout,"                   \n");
 }
 #endif
