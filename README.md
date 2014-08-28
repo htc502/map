@@ -5,19 +5,22 @@ file path,especially useful when the file path is deep and long.
 a file called .pathmark.db will be generated in $HOME dir
 
 example:  
-## cd to your working directory and type:
+1. Add a dir marker   
+cd to your working directory and type:
 
     map workdir .
 
 will add a marker named workdir which point to ur
 current working dir.
 
-## to see those dirs bookmarked,just type:
+2. List all dir markers   
+to see those dirs bookmarked,just type:
 
     map
 
 this will cause map to list all noted paths.
-## try to cd to a place marked with "wd",u can type either:
+3. Go to a bookmarked location  
+try to cd to a place marked with "wd",u can type either:
 
     cd `map wd`
 
