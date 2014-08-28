@@ -7,9 +7,9 @@ To compile it from source, just type:
 
 a file called .pathmark.db will be generated in $HOME dir  
 
-example:  
+examples:  
 
-1. Add a dir marker   
+##### Add a dir marker   
 
 cd to your working directory and type:
 
@@ -18,7 +18,7 @@ cd to your working directory and type:
 will add a marker named workdir which point to ur
 current working dir.
 
-2. List all dir markers   
+##### List all dir markers   
 
 to see those dirs bookmarked,just type:
 
@@ -26,7 +26,7 @@ to see those dirs bookmarked,just type:
 
 this will cause map to list all noted paths.
 
-3. Go to a bookmarked location  
+##### Go to a bookmarked location  
 
 try to cd to a place marked with "wd",u can type either:
 
