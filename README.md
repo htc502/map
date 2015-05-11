@@ -7,6 +7,10 @@ To compile it from source, just type:
 
 a file called .pathmark.db will be generated in $HOME dir  
 
+#### Compile under windows
+
+the source code was tested with codeblock 13.12 using mingw-gcc(gcc ver4.7.1 32bit)
+
 examples:  
 
 ##### Add a dir marker   
