@@ -11,9 +11,15 @@ void help(char *pname)
 int main(int argc, char **argv,char **envp)
 {
   char dbname[]=".pathmark.db";
-  char *home = getenv("HOME");
-  char *dbfile =(char*)malloc(sizeof(char)*MAX_PATHLEN);
-  strcat(dbfile,home);
+  char *home = NULL;
+  home = getenv("HOME");
+  if(home == NULL) {
+    fprintf(stderr, "error get HOME path\n");
+    exit(-1);
+  }
+  int dbflen = strlen(home) + 1 + strlen(dbname) + 1;
+  char *dbfile =(char*)malloc(sizeof(char)*dbflen);
+  strcpy(dbfile,home);
   strcat(dbfile,"/");
   strcat(dbfile,dbname);
 
@@ -45,8 +51,7 @@ int main(int argc, char **argv,char **envp)
     }
     /* index from 0-9 */
     if(strlen(argv[1]) == 1 && argv[1][0] >= 48 && argv[1][0] <= 57) {
-      char num = argv[1][0];
-      num -= 48;
+      char num = argv[1][0] - 48;
 	path = pos2path(num);
 	if(path != NULL)
 	  fprintf(stdout,"%s",path);
@@ -71,22 +76,29 @@ int main(int argc, char **argv,char **envp)
     rpath = realpath(xpath,NULL);
     if(NULL == rpath){
       fprintf(stderr,"invalid path:%s to bookmark\n",xpath);
+      free(dbfile); //free dbfile name
       exit(-1);
     }
     if(-1 == add(xmark,rpath)) {
       fprintf(stderr,"error when add new record\n");
+      free(dbfile); //free dbfile name
+      free(rpath);
       exit(-1);
     }
     if(-1 == writedb(dbfile)) {
       fprintf(stderr,"error write database file\n");
+      free(dbfile); //free dbfile name
+      free(rpath);
       exit(-1);
     }
+    free(dbfile); //free dbfile name
     free(rpath);
     release();
     break;
   default:
     help(argv[0]);
     release();
+    free(dbfile); //free dbfile name
     break;
   }
   return(0);
