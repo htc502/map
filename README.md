@@ -5,11 +5,13 @@ To compile it from source, just type:
 
     make -f makefile
 
-a file called .pathmark.db will be generated in $HOME dir  
+a file called .pathmark.db will be generated in $HOME dir on the first run of this widget 
 
 #### Compile under windows
 
-the source code was tested with codeblock 13.12 using mingw-gcc(gcc ver4.7.1 32bit)
+the source code was tested with codeblock 13.12 using mingw-gcc(gcc ver4.7.1 32bit), 
+to use it under win, envir variable named HOME should be avilable(right click My Computer->
+properties->advanced->enviroment variable)
 
 examples:  
 
