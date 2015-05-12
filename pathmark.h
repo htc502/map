@@ -172,7 +172,7 @@ int load(const char * dbfile){
   if(NULL == pfile){
     fprintf(stderr,"%s does not exist,will generate it automatically.\n",dbfile);
     writedb(dbfile); //write db_object to the file
-    exit(-1);
+    return(-1);
   }
 
   char line[MAX_PATHLEN];
@@ -300,9 +300,11 @@ int writedb(const char *file){
     if(fputs(line,pfile) == EOF){
       fprintf(stderr,"error writing %ith records\n",i);
       fclose(pfile);
+      free(line);
       return(-1);
     }
     fputs("\n",pfile);
+    free(line);
   }
   fclose(pfile);
   return(0);

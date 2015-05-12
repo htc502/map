@@ -18,18 +18,22 @@ int main(int argc, char **argv,char **envp)
     exit(-1);
   }
   int dbflen = strlen(home) + 1 + strlen(dbname) + 1;
-  char *dbfile =(char*)malloc(sizeof(char)*dbflen);
-  strcpy(dbfile,home);
-  strcat(dbfile,"/");
-  strcat(dbfile,dbname);
+  char *dbfname =(char*)malloc(sizeof(char)*dbflen);
+  strcpy(dbfname,home);
+  strcat(dbfname,"/");
+  strcat(dbfname,dbname);
 
   init();
-  load(dbfile);
+  if(-1 == load(dbfname)) {
+    free(dbfname);
+    fprintf(stderr,"failed to initialize database, try again pls.\n");
+    return(0);
+  }
 
   char *xpath,*xmark;
   const char *path;
   switch(argc){
-  case 1: /* print dbfile and help message */
+  case 1: /* print dbfname and help message */
     help(argv[0]);
     print();
     release();
@@ -52,13 +56,13 @@ int main(int argc, char **argv,char **envp)
     /* index from 0-9 */
     if(strlen(argv[1]) == 1 && argv[1][0] >= 48 && argv[1][0] <= 57) {
       char num = argv[1][0] - 48;
-	path = pos2path(num);
-	if(path != NULL)
-	  fprintf(stdout,"%s",path);
-	else
-	  fprintf(stdout,"");
-	release();
-	break;
+      path = pos2path(num);
+      if(path != NULL)
+	fprintf(stdout,"%s",path);
+      else
+	fprintf(stdout,"");
+      release();
+      break;
     }
     /* use mark name */
     path =  mark2path(argv[1]);
@@ -76,30 +80,29 @@ int main(int argc, char **argv,char **envp)
     rpath = realpath(xpath,NULL);
     if(NULL == rpath){
       fprintf(stderr,"invalid path:%s to bookmark\n",xpath);
-      free(dbfile); //free dbfile name
+      free(dbfname); //free dbfname name
       exit(-1);
     }
     if(-1 == add(xmark,rpath)) {
       fprintf(stderr,"error when add new record\n");
-      free(dbfile); //free dbfile name
+      free(dbfname); //free dbfname name
       free(rpath);
       exit(-1);
     }
-    if(-1 == writedb(dbfile)) {
+    if(-1 == writedb(dbfname)) {
       fprintf(stderr,"error write database file\n");
-      free(dbfile); //free dbfile name
+      free(dbfname); //free dbfname name
       free(rpath);
       exit(-1);
     }
-    free(dbfile); //free dbfile name
     free(rpath);
     release();
     break;
   default:
     help(argv[0]);
     release();
-    free(dbfile); //free dbfile name
     break;
   }
+  free(dbfname); //free dbfname name
   return(0);
 }
