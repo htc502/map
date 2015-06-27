@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "pathmark_db.h"
 
+static int free_record(int); //static function cann't be decleared inside any function!!!don;t know why...file scope?
+
 void init(){
   /* initialize db ram object */
 
@@ -58,9 +60,9 @@ int add(const char *mark,const char *path){
   int ind = pos(mark);
   if(ind != -1){
     int j = 0;
-    for(;j<NFIELD;j++){
+    for(;j<NFIELD;j++)
       free((db_object.pathdb)[ind][j]);
-    }
+
     strcpy((db_object.pathdb)[ind][0],mark);
     strcpy((db_object.pathdb)[ind][1],path);
     return(0);
@@ -69,13 +71,16 @@ int add(const char *mark,const char *path){
   /* a new bookmark, try to append this mark */
 
   /* dbfile is full, remove the oldest one */
+  /*release the oldest one's memo*/    
+  free_record(0);
+
+  /*move forward and add the new record*/
   if (db_object.NPATH  == MAX_NPATH ) {
     int j = 1;
-    for(;j<MAX_NPATH;j++){
+    for(;j<db_object.NPATH;j++){
       int f=0;
-      for(;f<NFIELD;f++){
+      for(;f<NFIELD;f++)
 	(db_object.pathdb)[j-1][f] = (db_object.pathdb)[j][f];
-      }
     }
     strcpy((db_object.pathdb)[MAX_NPATH-1][0],mark);
     strcpy((db_object.pathdb)[MAX_NPATH-1][1],path);
@@ -170,4 +175,35 @@ void printdb(){
   }
   fprintf(stdout,">>>>>>>>>>>>>>>>>>>>>>>\n");
   fprintf(stdout,"                   \n");
+}
+
+static int free_record(int pos)
+{
+  /*** this is a function used internally***/
+  /*if pos < 0 or pos > NPATH, abort*/
+  if(pos < 0 || pos > db_object.NPATH) {
+    fprintf(stderr, "invalid position: %i\n", pos);
+    return(-1);
+  }
+  /*release record*/
+  int ifield = 0;
+  for(;ifield < NFIELD;ifield++) {
+    free(db_object.pathdb[pos][ifield]);
+    db_object.pathdb[pos][ifield] = NULL;
+  }
+  return(0);
+}
+
+int rm(int pos)
+{
+  free_record(pos);
+  /*move records forward to fill the empty space*/
+  int j = pos;
+  for(;j < db_object.NPATH;j++) {
+    int f = 0;
+    for(;f<NFIELD;f++) 
+      (db_object.pathdb)[j][f] = (db_object.pathdb)[j+1][f];
+  }
+  /*we have done*/
+  return(0);
 }

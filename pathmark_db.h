@@ -22,6 +22,7 @@ const char* mark2path(const char *pmark);
 const char* pos2path(int pos);
 int add(const char *mark,const char *path);
 int writedb(const char *file);
+int rm(int pos);
 void printdb();
 
 #endif
