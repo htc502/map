@@ -42,7 +42,7 @@ int main(int argc, char **argv,char **envp)
   case 2:
     /* in case u want to use the index */
     /* index from 10-19 */
-    if(strlen(argv[1]) == 2 && argv[1][0] >= 48 && argv[1][0] <= 57 \
+    if(strlen(argv[1]) == 2 && argv[1][0] == 49 \
        && argv[1][1] >= 48 && argv[1][1] <= 57) {
       char num = (argv[1][0] - 48)*10;
       num += (argv[1][1]-48)*1;
@@ -54,14 +54,44 @@ int main(int argc, char **argv,char **envp)
       release();
       break;
     }
+    /* rm 10-19*/
+    if(strlen(argv[1]) == 3 && argv[1][0] == 45 && \
+       argv[1][1] == 49 && \
+       argv[1][2] >= 48 && argv[1][2] <= 57) {
+      char pos = (argv[1][1] - 48)*10;
+      pos += (argv[1][2]-48)*1;
+      if(-1 == rm(pos))
+	fprintf(stderr,"error executing rm function\n");
+      if(-1 == writedb(dbfname)) {
+	fprintf(stderr,"error write database file\n");
+	exit(-1);
+      }
+      release();
+      break;
+    }
     /* index from 0-9 */
-    if(strlen(argv[1]) == 1 && argv[1][0] >= 48 && argv[1][0] <= 57) {
+    if(strlen(argv[1]) == 1 && \
+       argv[1][0] >= 48 && argv[1][0] <= 57) {
       char num = argv[1][0] - 48;
       path = pos2path(num);
       if(path != NULL)
 	fprintf(stdout,"%s",path);
       else
 	fprintf(stdout,"");
+      release();
+      break;
+    }
+    /* rm 0-9 */
+    if(strlen(argv[1]) == 2 && argv[1][0] == 45 && \
+       argv[1][1] >= 48 && argv[1][1] <= 57) {
+      char pos = argv[1][1] - 48;
+      if(-1 == rm(pos))
+	fprintf(stderr,"error executing rm function\n");
+      if(-1 == writedb(dbfname)) {
+	fprintf(stderr,"error write database file\n");
+	exit(-1);
+      }
+
       release();
       break;
     }

@@ -1,4 +1,5 @@
 objects = pathmark_main.o pathmark_db.o
+CFLAGS = -g
 map: $(objects)
 	cc -o map $(objects)
 pathmark_main.o: pathmark_main.c pathmark_db.h realpath_w32.h

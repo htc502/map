@@ -59,10 +59,10 @@ int add(const char *mark,const char *path){
   int pos(const char *pmark);
   int ind = pos(mark);
   if(ind != -1){
-    int j = 0;
-    for(;j<NFIELD;j++)
-      free((db_object.pathdb)[ind][j]);
+    free_record(ind);
 
+    (db_object.pathdb)[ind][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
+    (db_object.pathdb)[ind][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
     strcpy((db_object.pathdb)[ind][0],mark);
     strcpy((db_object.pathdb)[ind][1],path);
     return(0);
@@ -70,18 +70,20 @@ int add(const char *mark,const char *path){
 
   /* a new bookmark, try to append this mark */
 
-  /* dbfile is full, remove the oldest one */
-  /*release the oldest one's memo*/    
-  free_record(0);
-
-  /*move forward and add the new record*/
+  /* dbfile is full */
   if (db_object.NPATH  == MAX_NPATH ) {
+    /*remove the oldest one;move forward and add the new record*/
+    /*release the oldest one's memo*/    
+    free_record(0);
     int j = 1;
     for(;j<db_object.NPATH;j++){
       int f=0;
       for(;f<NFIELD;f++)
 	(db_object.pathdb)[j-1][f] = (db_object.pathdb)[j][f];
     }
+
+    (db_object.pathdb)[MAX_NPATH-1][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
+    (db_object.pathdb)[MAX_NPATH-1][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
     strcpy((db_object.pathdb)[MAX_NPATH-1][0],mark);
     strcpy((db_object.pathdb)[MAX_NPATH-1][1],path);
     return(0);
@@ -93,7 +95,7 @@ int add(const char *mark,const char *path){
     (db_object.pathdb)[i][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
     strcpy((db_object.pathdb)[i][0],mark);
     strcpy((db_object.pathdb)[i][1],path);
-    /* NPATH plus 1 */
+    /* NPATH increase */
     db_object.NPATH++;
     return(0);
   }
@@ -196,14 +198,23 @@ static int free_record(int pos)
 
 int rm(int pos)
 {
-  free_record(pos);
+  if(-1 == free_record(pos))
+    return(-1);
   /*move records forward to fill the empty space*/
   int j = pos;
-  for(;j < db_object.NPATH;j++) {
+  for(;j != db_object.NPATH-1;j++) {
     int f = 0;
     for(;f<NFIELD;f++) 
       (db_object.pathdb)[j][f] = (db_object.pathdb)[j+1][f];
   }
+  /*make the last pointer NULL*/
+  int f = 0;
+  for(;f<NFIELD;f++) 
+    (db_object.pathdb)[j][f] = NULL;
+
+  /*decreaing the record count*/
+  db_object.NPATH -= 1;
+
   /*we have done*/
   return(0);
 }
