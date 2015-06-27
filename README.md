@@ -42,4 +42,6 @@ or just using the index of "wd" showed when u type "map":
 
     cd `map indexofwd`
 
+By default, map only record the last 20 bookmarks, the oldest record will be thrown away when a new record is coming when pathmarker.db is full. Change MAX_NPATH variable in pathmark.h before compilation to satisfy your own need.
+
 enjoy!
