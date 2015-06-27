@@ -15,6 +15,7 @@ static struct {
 } db_object;
 
 void init();
+int release();
 int load(const char * dbfile);
 int pos(const char *pmark);
 const char* mark2path(const char *pmark);

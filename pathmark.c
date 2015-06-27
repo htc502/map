@@ -125,6 +125,17 @@ int writedb(const char *file){
   return(0);
 }
 
+int release(){
+  int i = 0;
+  for(;i < db_object.NPATH;i++){
+    int j = 0;
+    for(;j<NFIELD;j++){
+      free((db_object.pathdb)[i][j]);
+    }
+  }
+  return(0);
+}
+
 int pos(const char *pmark){
   /* return the index of a mark */
   int i = 0;
