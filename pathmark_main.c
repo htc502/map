@@ -2,7 +2,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "pathmark.h"
+#include "pathmark_db.h"
 #include "realpath_w32.h"
 
 void help(char *pname)

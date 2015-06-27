@@ -1,5 +1,5 @@
-#ifndef PATHMARK_H
-#define PATHMARK_H
+#ifndef PATHMARK_DB_H
+#define PATHMARK_DB_H
 
 #include <stdlib.h>
 #include <string.h>

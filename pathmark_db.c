@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "pathmark.h"
+#include "pathmark_db.h"
 
 void init(){
   /* initialize db ram object */
