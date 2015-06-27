@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "pathmark.h"
+#include "realpath_w32.h"
 
 void help(char *pname)
 {
@@ -35,7 +36,7 @@ int main(int argc, char **argv,char **envp)
   switch(argc){
   case 1: /* print dbfname and help message */
     help(argv[0]);
-    print();
+    printdb();
     release();
     break;
   case 2:
