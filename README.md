@@ -1,6 +1,5 @@
 
-This is a small widget operates like alias, but applied on   
-file path,especially useful when the file path is deep and long. 
+This is a small widget operates like alias, but applied on file path. This is especially useful when the file path is deep and long.   
 To compile it from source, just type:  
 
     make -f makefile
@@ -43,5 +42,11 @@ or just using the index of "wd" showed when u type "map":
     cd `map indexofwd`
 
 By default, map only record the last 20 bookmarks, the oldest record will be thrown away when a new record is coming when pathmarker.db is full. Change MAX_NPATH variable in pathmark.h before compilation to satisfy your own need.
+
+##### To remove a specified bookmark
+
+      map -index
+
+Here, index is started from 0 to n-1. 
 
 enjoy!
