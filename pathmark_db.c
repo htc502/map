@@ -179,19 +179,19 @@ void printdb(){
   fprintf(stdout,"                   \n");
 }
 
-static int free_record(int pos)
+static int free_record(int index)
 {
   /*** this is a function used internally***/
-  /*if pos < 0 or pos > NPATH, abort*/
-  if(pos < 0 || pos > db_object.NPATH) {
-    fprintf(stderr, "invalid position: %i\n", pos);
+  /* index ranges from 0 to NPATH-1 */
+  if(index < 0 || index > (db_object.NPATH -1)) {
+    fprintf(stderr, "invalid index: %i\n", index);
     return(-1);
   }
   /*release record*/
   int ifield = 0;
   for(;ifield < NFIELD;ifield++) {
-    free(db_object.pathdb[pos][ifield]);
-    db_object.pathdb[pos][ifield] = NULL;
+    free(db_object.pathdb[index][ifield]);
+    db_object.pathdb[index][ifield] = NULL;
   }
   return(0);
 }

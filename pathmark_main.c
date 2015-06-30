@@ -61,9 +61,9 @@ int main(int argc, char **argv,char **envp)
       char pos = (argv[1][1] - 48)*10;
       pos += (argv[1][2]-48)*1;
       if(-1 == rm(pos))
-	fprintf(stderr,"error executing rm function\n");
+	fprintf(stderr,"remove record failed!\n");
       if(-1 == writedb(dbfname)) {
-	fprintf(stderr,"error write database file\n");
+	fprintf(stderr,"writing database failed!\n");
 	exit(-1);
       }
       release();
@@ -86,9 +86,9 @@ int main(int argc, char **argv,char **envp)
        argv[1][1] >= 48 && argv[1][1] <= 57) {
       char pos = argv[1][1] - 48;
       if(-1 == rm(pos))
-	fprintf(stderr,"error executing rm function\n");
+	fprintf(stderr,"remove record failed!\n");
       if(-1 == writedb(dbfname)) {
-	fprintf(stderr,"error write database file\n");
+	fprintf(stderr,"writing database failed!\n");
 	exit(-1);
       }
 
@@ -121,7 +121,7 @@ int main(int argc, char **argv,char **envp)
       exit(-1);
     }
     if(-1 == writedb(dbfname)) {
-      fprintf(stderr,"error write database file\n");
+      fprintf(stderr,"writing database failed!\n");
       free(dbfname); //free dbfname name
       free(rpath);
       exit(-1);
