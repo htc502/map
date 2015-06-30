@@ -49,8 +49,6 @@ int main(int argc, char **argv,char **envp)
       path = pos2path(num);
       if(path != NULL)
 	fprintf(stdout,"%s",path);
-      else
-	fprintf(stdout,"");
       release();
       break;
     }
@@ -76,8 +74,6 @@ int main(int argc, char **argv,char **envp)
       path = pos2path(num);
       if(path != NULL)
 	fprintf(stdout,"%s",path);
-      else
-	fprintf(stdout,"");
       release();
       break;
     }
@@ -99,8 +95,6 @@ int main(int argc, char **argv,char **envp)
     path =  mark2path(argv[1]);
     if(path != NULL)
       fprintf(stdout,"%s",path);
-    else
-      fprintf(stdout,"");
     release();
     break;
   case 3:
