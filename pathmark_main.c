@@ -24,12 +24,6 @@ int main(int argc, char **argv,char **envp)
   strcat(dbfname,"/");
   strcat(dbfname,dbname);
 
-  //  init();
-  //  if(-1 == load(dbfname)) {
-  //    free(dbfname);
-  //    fprintf(stderr,"failed to initialize database, try again pls.\n");
-  //    return(0);
-  //  }
   opendb(dbfname);
 
   char *xpath,*xmark;
@@ -49,7 +43,6 @@ int main(int argc, char **argv,char **envp)
       path = pos2path(num);
       if(path != NULL)
 	fprintf(stdout,"%s",path);
-      //      release();
       break;
     }
     /* rm 10-19*/
@@ -91,14 +84,11 @@ int main(int argc, char **argv,char **envp)
     char *rpath;
     rpath = realpath(xpath,NULL);
     if(NULL == rpath){
-      fprintf(stderr,"invalid path:%s to bookmark\n",xpath);
+      fprintf(stderr,"invalid path:%s to bookmark, stop to add.\n",xpath);
       break;
     }
-    if(-1 == add(xmark,rpath)) {
+    if(-1 == add(xmark,rpath)) 
       fprintf(stderr,"error when add new record\n");
-      free(rpath);
-      break;
-    }
     free(rpath);
     break;
   default:
