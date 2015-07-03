@@ -1,5 +1,18 @@
 #include <stdio.h>
-#include "pathmark_db.h"
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_PATHLEN 1000
+#define MAX_NPATH 20 /* max number of records */
+#define NFIELD 2
+#define DELIM "\t"
+
+static struct {
+  char *pathdb[MAX_NPATH][NFIELD];
+  int NPATH;
+  int clean; //flag for write back to file
+} db_object;
+
 
 static int free_record(int); //static function cann't be decleared inside any function!!!don;t know why...file scope?
 
@@ -7,6 +20,7 @@ void init(){
   /* initialize db ram object */
 
   db_object.NPATH = 0;
+  db_object.clean = 0;
   int i = 0;
   for(;i<MAX_NPATH;i++){
     int j = 0;
@@ -17,12 +31,12 @@ void init(){
 }
 int load(const char * dbfile){
   /* load dbfile into ram */
-  int writedb(const char *file);
+  int writedb(const char*, int);
 
   FILE *pfile = fopen(dbfile,"rb");
   if(NULL == pfile){
     fprintf(stderr,"%s does not exist,will generate it automatically.\n",dbfile);
-    writedb(dbfile); //write db_object to the file
+    writedb(dbfile, 1); //write db_object to the file forcely
     return(-1);
   }
 
@@ -65,6 +79,7 @@ int add(const char *mark,const char *path){
     (db_object.pathdb)[ind][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
     strcpy((db_object.pathdb)[ind][0],mark);
     strcpy((db_object.pathdb)[ind][1],path);
+    db_object.clean = 1; //set flag, need to write back to db file
     return(0);
   }
 
@@ -86,6 +101,7 @@ int add(const char *mark,const char *path){
     (db_object.pathdb)[MAX_NPATH-1][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
     strcpy((db_object.pathdb)[MAX_NPATH-1][0],mark);
     strcpy((db_object.pathdb)[MAX_NPATH-1][1],path);
+    db_object.clean = 1; //set flag, need to write back to db file
     return(0);
   }
   /* just add to the tail */
@@ -97,6 +113,7 @@ int add(const char *mark,const char *path){
     strcpy((db_object.pathdb)[i][1],path);
     /* NPATH increase */
     db_object.NPATH++;
+    db_object.clean = 1; //set flag, need to write back to db file
     return(0);
   }
 
@@ -104,8 +121,10 @@ int add(const char *mark,const char *path){
   return(-1);
 }
 
-int writedb(const char *file){
+int writedb(const char *file, int force){
   /* write ram db object to file */
+  if(db_object.clean == 0  && force == 0) //clean status, no need to write back, force is set to create db file with clean(empty) db_object
+    return(0);
   int i = 0;
   FILE *pfile = fopen(file,"w");
   if(NULL == pfile){
@@ -184,7 +203,6 @@ static int free_record(int index)
   /*** this is a function used internally***/
   /* index ranges from 0 to NPATH-1 */
   if(index < 0 || index > (db_object.NPATH -1)) {
-    fprintf(stderr, "invalid index: %i\n", index);
     return(-1);
   }
   /*release record*/
@@ -214,7 +232,29 @@ int rm(int pos)
 
   /*decreaing the record count*/
   db_object.NPATH -= 1;
+  /* set write back flag */
+  db_object.clean = 1; //set flag, need to write back to db file
 
   /*we have done*/
+  return(0);
+}
+
+int opendb(char *dbfname)
+{
+  //return -1 for create a new database file
+  //init
+  init();
+  //load(read)
+  return(load(dbfname));
+}
+
+int closedb(const char *dbfname)
+{
+  //writedb
+  if( -1 == writedb(dbfname,0) ) {
+    fprintf(stderr, "writing database failed!\n");
+  }
+  //releasedb
+  release();
   return(0);
 }

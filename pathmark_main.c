@@ -24,12 +24,13 @@ int main(int argc, char **argv,char **envp)
   strcat(dbfname,"/");
   strcat(dbfname,dbname);
 
-  init();
-  if(-1 == load(dbfname)) {
-    free(dbfname);
-    fprintf(stderr,"failed to initialize database, try again pls.\n");
-    return(0);
-  }
+  //  init();
+  //  if(-1 == load(dbfname)) {
+  //    free(dbfname);
+  //    fprintf(stderr,"failed to initialize database, try again pls.\n");
+  //    return(0);
+  //  }
+  opendb(dbfname);
 
   char *xpath,*xmark;
   const char *path;
@@ -37,7 +38,6 @@ int main(int argc, char **argv,char **envp)
   case 1: /* print dbfname and help message */
     help(argv[0]);
     printdb();
-    release();
     break;
   case 2:
     /* in case u want to use the index */
@@ -49,7 +49,7 @@ int main(int argc, char **argv,char **envp)
       path = pos2path(num);
       if(path != NULL)
 	fprintf(stdout,"%s",path);
-      release();
+      //      release();
       break;
     }
     /* rm 10-19*/
@@ -59,12 +59,7 @@ int main(int argc, char **argv,char **envp)
       char pos = (argv[1][1] - 48)*10;
       pos += (argv[1][2]-48)*1;
       if(-1 == rm(pos))
-	fprintf(stderr,"remove record failed!\n");
-      if(-1 == writedb(dbfname)) {
-	fprintf(stderr,"writing database failed!\n");
-	exit(-1);
-      }
-      release();
+	fprintf(stderr,"invalid index: %d\n",pos);
       break;
     }
     /* index from 0-9 */
@@ -74,7 +69,6 @@ int main(int argc, char **argv,char **envp)
       path = pos2path(num);
       if(path != NULL)
 	fprintf(stdout,"%s",path);
-      release();
       break;
     }
     /* rm 0-9 */
@@ -82,20 +76,13 @@ int main(int argc, char **argv,char **envp)
        argv[1][1] >= 48 && argv[1][1] <= 57) {
       char pos = argv[1][1] - 48;
       if(-1 == rm(pos))
-	fprintf(stderr,"remove record failed!\n");
-      if(-1 == writedb(dbfname)) {
-	fprintf(stderr,"writing database failed!\n");
-	exit(-1);
-      }
-
-      release();
+	fprintf(stderr,"invalid index: %d\n",pos);
       break;
     }
     /* use mark name */
     path =  mark2path(argv[1]);
     if(path != NULL)
       fprintf(stdout,"%s",path);
-    release();
     break;
   case 3:
     /* add a new mark */
@@ -105,29 +92,20 @@ int main(int argc, char **argv,char **envp)
     rpath = realpath(xpath,NULL);
     if(NULL == rpath){
       fprintf(stderr,"invalid path:%s to bookmark\n",xpath);
-      free(dbfname); //free dbfname name
-      exit(-1);
+      break;
     }
     if(-1 == add(xmark,rpath)) {
       fprintf(stderr,"error when add new record\n");
-      free(dbfname); //free dbfname name
       free(rpath);
-      exit(-1);
-    }
-    if(-1 == writedb(dbfname)) {
-      fprintf(stderr,"writing database failed!\n");
-      free(dbfname); //free dbfname name
-      free(rpath);
-      exit(-1);
+      break;
     }
     free(rpath);
-    release();
     break;
   default:
     help(argv[0]);
-    release();
     break;
   }
+  closedb(dbfname); //closedb will first write dbobject and then free memory
   free(dbfname); //free dbfname name
   return(0);
 }
