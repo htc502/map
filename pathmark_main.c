@@ -96,6 +96,7 @@ int main(int argc, char **argv,char **envp)
     break;
   }
   closedb(dbfname); //closedb will first write dbobject and then free memory
-  free(dbfname); //free dbfname name
+
+  free(dbfname); //free dbfname string allocated previously
   return(0);
 }

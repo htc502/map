@@ -3,8 +3,8 @@
 #include <string.h>
 
 #define MAX_PATHLEN 1000
-#define MAX_NPATH 20 /* max number of records */
-#define NFIELD 2
+#define MAX_NPATH 20 /* maximum number of records pathmarker.db will hold */
+#define NFIELD 2 /* NFIELD and DELIM is used in pathmarker.db construction */
 #define DELIM "\t"
 
 static struct {
@@ -29,25 +29,26 @@ void init(){
     }
   }
 }
+
 int load(const char * dbfile){
-  /* load dbfile into ram */
   int writedb(const char*, int);
 
   FILE *pfile = fopen(dbfile,"rb");
   if(NULL == pfile){
     fprintf(stderr,"%s does not exist,will generate it automatically.\n",dbfile);
+
+    /* use writedb funx to create a new pathmarker.db file */
     writedb(dbfile, 1); //write db_object to the file forcely
     return(-1);
   }
 
-  char line[MAX_PATHLEN];
-  int npath = 0;
+  char line[MAX_PATHLEN];  int npath = 0;
   while((NULL != fgets(line,MAX_PATHLEN,pfile) && (npath<MAX_NPATH))){
-    line[strlen(line)-1] = '\0';
+    line[strlen(line)-1] = '\0'; /* chop the return char */
     char *pmark,*ppath;
     pmark = strtok(line,DELIM);
     ppath = strtok(NULL,DELIM);
-    /*this will not happen until u edit the pathmark.db mannually */
+    /*this will not happen until u edit pathmark.db mannually */
     if (pmark == NULL || ppath ==NULL)
       continue;
 
@@ -66,8 +67,8 @@ int load(const char * dbfile){
   return(0);
 }
 
+/* add a record */
 int add(const char *mark,const char *path){
-  /* add a record */
 
   /* check the mark already exists */
   int pos(const char *pmark);
@@ -123,7 +124,8 @@ int add(const char *mark,const char *path){
 
 int writedb(const char *file, int force){
   /* write ram db object to file */
-  if(db_object.clean == 0  && force == 0) //clean status, no need to write back, force is set to create db file with clean(empty) db_object
+  if(db_object.clean == 0  && force == 0) //clean status, no need to write back,
+                                          //force is set to create db file with clean(empty) db_object
     return(0);
   int i = 0;
   FILE *pfile = fopen(file,"w");
@@ -132,6 +134,7 @@ int writedb(const char *file, int force){
     return(-1);
   }
   for(;i<db_object.NPATH;i++){
+    /* assemble the line to write */
     char *line = (char*) malloc(sizeof(char)*MAX_PATHLEN);
     int f=0;
     for(;f<NFIELD;f++){
@@ -230,7 +233,7 @@ int rm(int pos)
   for(;f<NFIELD;f++) 
     (db_object.pathdb)[j][f] = NULL;
 
-  /*decreaing the record count*/
+  /*decreasing the record count*/
   db_object.NPATH -= 1;
   /* set write back flag */
   db_object.clean = 1; //set flag, need to write back to db file
