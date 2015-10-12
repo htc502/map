@@ -2,8 +2,8 @@
 This is a small(and simple&stupid) widget operates like alias, but applied on file path. It is especially useful when the file path is deep and long.   
 To compile it from source under linux and Mac, just type:  
 
-    make -f makefile
-
+    make
+    
 `mv` or `ln -s ` the map binary to a location that is in your path, you can go...
 a file called .pathmark.db will be generated in $HOME dir on the first run of this widget 
 
