@@ -1,5 +1,5 @@
-
-This is a small(and simple&stupid) widget operates like alias, but applied on file path. It is especially useful when the file path is deep and long.   
+### :round_pushpin: __map__  
+This is a small(and simple&stupid) widget operates like `alias`, but applied on file path. It is especially useful when the file path is deep and long :smile:.   
 To compile it from source under linux and Mac, just type:  
 
     make
@@ -10,14 +10,13 @@ A file called __.pathmark.db__ will be generated in $HOME dir on the first run o
 #### Compile under windows
 
 the source code was tested with codeblock 13.12 using mingw-gcc(gcc ver4.7.1 32bit), 
-to use it under win, envir variable named __HOME__ should be avilable(right click My Computer->
-properties->advanced->enviroment variable) for `map` to work.  
+to use it under win, envir variable named __HOME__ should be avilable(right click :computer: :arrow_right: properties :arrow_right: advanced :arrow_right: enviroment variable) for `map` to work.  
 
 examples:  
 
 ##### Add a dir marker   
 
-cd to your working directory and type:
+`cd` to your working directory and type:
 
     map workdir .
 
@@ -48,7 +47,7 @@ By default, `map` only record the last 20 bookmarks u have made, the oldest reco
 
       map -index
 
-Here, index is started from 0 to n-1, ie, the first record will be removed by  
+Here, index is started from 0 to n-1, ie, the first record will be removed by :alien:    
 
       map -0
 
