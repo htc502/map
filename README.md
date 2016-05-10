@@ -4,7 +4,7 @@ To compile it from source under linux and Mac, just type:
 
     make
     
-`mv` or `ln -s ` the `map` binary to a location that is in your path, you can go...
+`mv` or `ln -s ` the `map` binary to a location that is in your path, then rock&roll...
 A file called __.pathmark.db__ will be generated in $HOME dir on the first run of this widget 
 
 #### Compile under windows
