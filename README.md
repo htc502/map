@@ -54,7 +54,7 @@ By default, `map` only record the last 20 bookmarks you have made, the oldest re
 
       map -index
 
-Here, index is started from 0 to n-1, i.e. the first record will be removed by :alien:    
+Here, index starts from 0 to n-1, i.e. the first record will be removed by :alien:    
 
       map -0
 
