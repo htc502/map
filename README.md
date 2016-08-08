@@ -5,8 +5,8 @@ To compile it from source under linux and Mac, just type:
     make
     
 To use it:  
-1. `mv` or `ln -s ` the `map` binary and the `mapgo.sh` script to a location that is in your path.  
-2. `source mapgo.sh` in your .bashrc or .bash_profile  
+1. `mv` or `ln -s ` the `map` binary and the `map_go.sh` script to a location that is in your path.  
+2. `source map_go.sh` in your .bashrc or .bash_profile  
 A file called __.pathmark.db__ will be generated in $HOME dir on the first run of this widget 
 
 #### Compile under windows
@@ -43,7 +43,7 @@ or just using the index of "wd" showed when u type `map`:
 
     cd `map indexofwd`
 
-or, you can let `gomap.sh` do some work for you:
+or, you can let `go_map.sh` do some work for you:
     
     g wd
     g indexofwd
