@@ -1,7 +1,7 @@
 ##the function which call map and cd to change the wd of the invoking terminal
 function g {
     if (($# == 0)); then
-	echo \"usage g pathmark\"
+	echo \"Usage: g pathmarker\"
 	return
     fi
     path=`map $1`
