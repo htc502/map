@@ -1,20 +1,26 @@
 ### :round_pushpin: __map__  
 This is a small(and simple&stupid) widget operating like `alias`, but applied on file path. It is especially useful when the file path is deep and long :smile:.   
-To compile it from source under linux and Mac, just type:  
+
+#### How to install  
+
+##### To compile it from source under linux and Mac, just type:  
 
     make
     
-To use it:  
+##### To use it:  
+
 1. `mv` or `ln -s ` the `map` binary and the `map_go.sh` script to a location in your path.  
 2. `source map_go.sh` in your .bashrc or .bash_profile  
+
 A file called __.pathmark.db__ will be generated in $HOME dir on the first run of this widget 
 
-#### Compile under windows
+##### Compile under windows
 
 The source code was tested with codeblock 13.12 using mingw-gcc(gcc ver4.7.1 32bit), 
 to use it under win, enviroment variable named __HOME__ should be avilable(right click :computer: :arrow_right: properties :arrow_right: advanced :arrow_right: enviroment variable).
 
-Examples:  
+
+#### Examples  
 
 ##### Add a dir marker   
 
