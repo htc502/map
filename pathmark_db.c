@@ -38,7 +38,7 @@ int load(const char * dbfile){
     fprintf(stderr,"%s does not exist,will generate it automatically.\n",dbfile);
 
     /* use writedb funx to create a new pathmarker.db file */
-    writedb(dbfile, 1); //write db_object to the file forcely
+    writedb(dbfile, 1); //write db_object to the file by force
     return(-1);
   }
 
@@ -70,7 +70,7 @@ int load(const char * dbfile){
 /* add a record */
 int add(const char *mark,const char *path){
 
-  /* check the mark already exists */
+  /* check if the mark already exists,if it exists, just replace it */
   int pos(const char *pmark);
   int ind = pos(mark);
   if(ind != -1){
@@ -89,29 +89,38 @@ int add(const char *mark,const char *path){
   /* dbfile is full */
   if (db_object.NPATH  == MAX_NPATH ) {
     /*remove the oldest one;move forward and add the new record*/
-    /*release the oldest one's memo*/    
-    free_record(0);
-    int j = 1;
-    for(;j<db_object.NPATH;j++){
+    /*release the oldest one's ram*/    
+    free_record(MAX_NPATH-1);
+    int j = MAX_NPATH - 1;
+    for(;j > 0;j--){
       int f=0;
       for(;f<NFIELD;f++)
-	(db_object.pathdb)[j-1][f] = (db_object.pathdb)[j][f];
+	(db_object.pathdb)[j][f] = (db_object.pathdb)[j-1][f];
     }
 
-    (db_object.pathdb)[MAX_NPATH-1][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
-    (db_object.pathdb)[MAX_NPATH-1][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
-    strcpy((db_object.pathdb)[MAX_NPATH-1][0],mark);
-    strcpy((db_object.pathdb)[MAX_NPATH-1][1],path);
+    /* add new record */
+    (db_object.pathdb)[0][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
+    (db_object.pathdb)[0][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
+    strcpy((db_object.pathdb)[0][0],mark);
+    strcpy((db_object.pathdb)[0][1],path);
     db_object.clean = 1; //set flag, need to write back to db file
     return(0);
   }
-  /* just add to the tail */
+  /* move all records forward by one, add new record to the head*/
   else {
     int i = db_object.NPATH;
-    (db_object.pathdb)[i][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
-    (db_object.pathdb)[i][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
-    strcpy((db_object.pathdb)[i][0],mark);
-    strcpy((db_object.pathdb)[i][1],path);
+int j = i;
+for(;j > 0;j--) {
+int f=0;
+for(;f<NFIELD;f++)
+	(db_object.pathdb)[j][f] = (db_object.pathdb)[j-1][f];
+}
+/* add new record */
+    (db_object.pathdb)[0][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
+    (db_object.pathdb)[0][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
+    strcpy((db_object.pathdb)[0][0],mark);
+    strcpy((db_object.pathdb)[0][1],path);
+
     /* NPATH increase */
     db_object.NPATH++;
     db_object.clean = 1; //set flag, need to write back to db file
