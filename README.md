@@ -41,7 +41,7 @@ This will make `map` list all noted paths.
 
 ##### Go to a bookmarked location  
 
-Try to `cd` to a place marked with "wd",you can either type, `""` is added in case if the path has __whitespaces__:
+Try to `cd` to a place marked with "wd",you can either type( `""` is added in case if the path has __whitespaces__):
 
     cd "`map wd`"
 
