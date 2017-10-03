@@ -45,6 +45,10 @@ Try to `cd` to a place marked with "wd",you can either type:
 
     cd `map wd`
 
+In case if the path has __whitespaces__:
+
+    cd "`map wd_has_spaces`"
+
 or just use the index number of "wd" showed when you type `map`:
 
     cd `map indexofwd`
