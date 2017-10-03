@@ -41,19 +41,15 @@ This will make `map` list all noted paths.
 
 ##### Go to a bookmarked location  
 
-Try to `cd` to a place marked with "wd",you can either type:
+Try to `cd` to a place marked with "wd",you can either type, `""` is added in case if the path has __whitespaces__:
 
-    cd `map wd`
-
-In case if the path has __whitespaces__:
-
-    cd "`map wd_has_spaces`"
+    cd "`map wd`"
 
 or just use the index number of "wd" showed when you type `map`:
 
-    cd `map indexofwd`
+    cd "`map indexofwd`"
 
-or, you can let the `g` function in `go_map.sh` do some work for you:
+or, you can just let the `g` function in `go_map.sh` do the same work for you:
     
     g wd
     g indexofwd
