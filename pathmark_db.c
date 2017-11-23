@@ -9,8 +9,8 @@
 
 static struct {
   char *pathdb[MAX_NPATH][NFIELD];
-  int NPATH;
-  int clean; //flag for write back to file
+  int NPATH; //current load
+  int CLEAN; //flag for write back 
 } db_object;
 
 
@@ -20,7 +20,7 @@ void init(){
   /* initialize db ram object */
 
   db_object.NPATH = 0;
-  db_object.clean = 0;
+  db_object.CLEAN = 0;
   int i = 0;
   for(;i<MAX_NPATH;i++){
     int j = 0;
@@ -80,7 +80,7 @@ int add(const char *mark,const char *path){
     (db_object.pathdb)[ind][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
     strcpy((db_object.pathdb)[ind][0],mark);
     strcpy((db_object.pathdb)[ind][1],path);
-    db_object.clean = 1; //set flag, need to write back to db file
+    db_object.CLEAN = 1; //set flag, need to write back to db file
     return(0);
   }
 
@@ -103,7 +103,7 @@ int add(const char *mark,const char *path){
     (db_object.pathdb)[0][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
     strcpy((db_object.pathdb)[0][0],mark);
     strcpy((db_object.pathdb)[0][1],path);
-    db_object.clean = 1; //set flag, need to write back to db file
+    db_object.CLEAN = 1; //set flag, need to write back to db file
     return(0);
   }
   /* move all records forward by one, add new record to the head*/
@@ -123,7 +123,7 @@ for(;f<NFIELD;f++)
 
     /* NPATH increase */
     db_object.NPATH++;
-    db_object.clean = 1; //set flag, need to write back to db file
+    db_object.CLEAN = 1; //set flag, need to write back to db file
     return(0);
   }
 
@@ -133,8 +133,8 @@ for(;f<NFIELD;f++)
 
 int writedb(const char *file, int force){
   /* write ram db object to file */
-  if(db_object.clean == 0  && force == 0) //clean status, no need to write back,
-                                          //force is set to create db file with clean(empty) db_object
+  if(db_object.CLEAN == 0  && force == 0) //CLEAN status, no need to write back,
+                                          //force is set to create db file with CLEAN(empty) db_object
     return(0);
   int i = 0;
   FILE *pfile = fopen(file,"w");
@@ -245,7 +245,7 @@ int rm(int pos)
   /*decreasing the record count*/
   db_object.NPATH -= 1;
   /* set write back flag */
-  db_object.clean = 1; //set flag, need to write back to db file
+  db_object.CLEAN = 1; //set flag, need to write back to db file
 
   /*we have done*/
   return(0);
