@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define MAX_PATHLEN 1000
-#define MAX_NPATH 20 /* maximum number of records pathmarker.db will hold */
+#define MAX_NPATH 20 /* maximum number of records pathmarker.db will hold, no more than 99 based on current implementation of main fxn */
 #define NFIELD 2 /* NFIELD and DELIM is used in pathmarker.db construction */
 #define DELIM "\t"
 

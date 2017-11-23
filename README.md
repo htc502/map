@@ -54,7 +54,7 @@ or, you can just let the `g` function in `go_map.sh` do the same work for you:
     g wd
     g indexofwd
 
-By default, `map` only record the last 20 bookmarks you have added, the oldest record will be thrown away when a new record is coming in but __pathmarker.db__ is full. Change __MAX_NPATH__ variable in __pathmark_db.c__ before compilation to satisfy your own need.
+By default, `map` only record the last 20 bookmarks you have added, the oldest record will be thrown away when a new record is coming in but __pathmarker.db__ is full. Change __MAX_NPATH__ variable in __pathmark_db.c__ before compilation to satisfy your own need. But be sure that this number is <= 99 because of current argument parsing strategy (I don't think it's a good way to bookmark that many file paths).
 
 ##### To remove a specified bookmark
 
