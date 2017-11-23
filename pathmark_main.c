@@ -43,17 +43,7 @@ int main(int argc, char **argv,char **envp)
       num += (argv[1][1]-48)*1;
       path = pos2path(num);
       if(path != NULL)
-	fprintf(stdout,"%s",path);
-      break;
-    }
-    /* rm 10-19*/
-    if(strlen(argv[1]) == 3 && argv[1][0] == 45 && \
-       argv[1][1] == 49 && \
-       argv[1][2] >= 48 && argv[1][2] <= 57) {
-      char pos = (argv[1][1] - 48)*10;
-      pos += (argv[1][2]-48)*1;
-      if(-1 == rm(pos))
-	fprintf(stderr,"invalid index: %d\n",pos);
+        fprintf(stdout,"%s",path);
       break;
     }
     /* index from 0-9 */
@@ -62,18 +52,37 @@ int main(int argc, char **argv,char **envp)
       char num = argv[1][0] - 48;
       path = pos2path(num);
       if(path != NULL)
-	fprintf(stdout,"%s",path);
+        fprintf(stdout,"%s",path);
       break;
     }
-    /* rm 0-9 */
-    if(strlen(argv[1]) == 2 && argv[1][0] == 45 && \
-       argv[1][1] >= 48 && argv[1][1] <= 57) {
-      char pos = argv[1][1] - 48;
-      if(-1 == rm(pos))
-	fprintf(stderr,"invalid index: %d\n",pos);
+    /* rm a bookmarker */
+    if(argv[1][0] == 45) {
+      /* rm 0-9 */
+      if(strlen(argv[1]) == 2 && argv[1][0] == 45 && \
+         argv[1][1] >= 48 && argv[1][1] <= 57) {
+        char position = argv[1][1] - 48;
+        if(-1 == rm(position))
+          fprintf(stderr,"invalid index: %d\n",position);
+        break;
+      }
+      /* rm 10-19*/
+      if(strlen(argv[1]) == 3 && argv[1][0] == 45 && \
+         argv[1][1] == 49 && \
+         argv[1][2] >= 48 && argv[1][2] <= 57) {
+        char position = (argv[1][1] - 48)*10;
+        position += (argv[1][2]-48)*1;
+        if(-1 == rm(position))
+          fprintf(stderr,"invalid index: %d\n",position);
+        break;
+      }
+      /* rm using marker */
+      char* pmark2rm=argv[1]+1;
+      char ind = pos(pmark2rm);
+      if(-1 == rm(ind))
+        fprintf(stderr,"invalid marker: %s\n",pmark2rm);
       break;
     }
-    /* use mark name */
+    /* index using mark name */
     path =  mark2path(argv[1]);
     if(path != NULL)
       fprintf(stdout,"%s",path);
@@ -89,7 +98,7 @@ int main(int argc, char **argv,char **envp)
       break;
     }
     if(-1 == add(xmark,rpath)) 
-      fprintf(stderr,"error when add new record\n");
+      fprintf(stderr,"error when adding a new record:%s: %s\n",xmark,rpath);
     free(rpath);
     break;
   default:
@@ -97,7 +106,6 @@ int main(int argc, char **argv,char **envp)
     break;
   }
   closedb(dbfname); //closedb will first write dbobject and then free memory
-
   free(dbfname); //free dbfname string allocated previously
   return(0);
 }

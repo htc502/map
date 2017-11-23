@@ -29,7 +29,7 @@ to use it under win, enviroment variable named __HOME__ should be avilable(right
     map workdir .
 
 This will add a marker named __workdir__ into __.pathmark.db__ which points to ur
-current working directory. 
+current working directory. __Avoid using number as a marker__, this will confuse map because of its indexing function.
 
 ##### List all dir markers   
 
@@ -54,7 +54,7 @@ or, you can just let the `g` function in `go_map.sh` do the same work for you:
     g wd
     g indexofwd
 
-By default, `map` only record the last 20 bookmarks you have added, the oldest record will be thrown away when a new record is coming in but __pathmarker.db__ is full. Change __MAX_NPATH__ variable in __pathmark_db.c__ before compilation to satisfy your own need. But be sure that this number is <= 99 because of current argument parsing strategy (I don't think it's a good way to bookmark that many file paths).
+By default, `map` only record the last 20 bookmarks you have added, the oldest record will be thrown away when a new record is coming in while __pathmarker.db__ is full. Modify __MAX_NPATH__ variable in __pathmark_db.c__ before compilation to satisfy your own need. But be sure that this number is <= 99 because of current argument parsing strategy (I don't think it's a good way to bookmark that many file paths).
 
 ##### To remove a specified bookmark
 

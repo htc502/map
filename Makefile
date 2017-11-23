@@ -1,5 +1,5 @@
 objects = pathmark_main.o pathmark_db.o
-CFLAGS = -O3 -Wall
+CFLAGS = -O3 -Wall -g
 DEST = $(HOME)/.local/bin
 map: $(objects)
 	cc -o map $(objects)
