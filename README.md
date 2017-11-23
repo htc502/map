@@ -65,3 +65,5 @@ Here, index starts from 0 to n-1, i.e. the first record will be removed by :alie
       map -0
 
 Enjoy!
+
+![image](https://github.com/htc502/map/blob/master/map_howto.gif)
