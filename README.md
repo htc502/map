@@ -29,7 +29,7 @@ to use it under win, enviroment variable named __HOME__ should be avilable(right
     map workdir .
 
 This will add a marker named __workdir__ into __.pathmark.db__ which points to ur
-current working directory. __Avoid using number as a marker__, this will confuse map because of its indexing function.
+current working directory. __Avoid using number as a marker__, this will confuse map because of its setting to use number as the index.
 
 ##### List all dir markers   
 
@@ -41,26 +41,25 @@ This will make `map` list all noted paths.
 
 ##### Go to a bookmarked location  
 
-Try to `cd` to a place marked with "wd",you can either type( `""` is added in case if the path has __whitespaces__):
+Try to `cd` to a place marked with "wd",just type:
+    
+    g wd
+    
+or just use the index number of "wd" showed when you type `map`:
+
+    g indexofwd
+
+`g` is a function defined in `map_go.sh` which help you do the following job( `""` is added in case if the path has __whitespaces__):
 
     cd "`map wd`"
 
-or just use the index number of "wd" showed when you type `map`:
-
-    cd "`map indexofwd`"
-
-or, you can just let the `g` function in `go_map.sh` do the same work for you:
-    
-    g wd
-    g indexofwd
-
-By default, `map` only record the last 20 bookmarks you have added, the oldest record will be thrown away when a new record is coming in while __pathmarker.db__ is full. Modify __MAX_NPATH__ variable in __pathmark_db.c__ before compilation to satisfy your own need. But be sure that this number is <= 99 because of current argument parsing strategy (I don't think it's a good way to bookmark that many file paths).
+By default, `map` only record the last 20 bookmarks you have added. The oldest record will be thrown away when a new record is coming in if __pathmarker.db__ is full. Modify __MAX_NPATH__ variable in __pathmark_db.c__ before compilation to satisfy your own need. Be sure that this number is __<= 99__ because of current argument parsing strategy (I don't think it's a good way to bookmark that many file paths).
 
 ##### To remove a specified bookmark
 
       map -index
 
-Here, index starts from 0 to n-1, i.e. the first record will be removed by :alien: :
+Here, the index starts from 0 to n-1, i.e. the first record will be removed by :alien: :
 
       map -0
 
