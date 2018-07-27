@@ -1,24 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #define MAX_PATHLEN 1000
 #define MAX_NPATH 20 /* maximum number of records pathmarker.db will hold, no more than 99 based on current implementation of main fxn */
 #define NFIELD 2 /* NFIELD and DELIM is used in pathmarker.db construction */
 #define DELIM "\t"
-
 static struct {
   char *pathdb[MAX_NPATH][NFIELD];
   int NPATH; //current load
   int CLEAN; //flag for write back 
 } db_object;
-
-
 static int free_record(int); //static function cann't be decleared inside any function!!!don;t know why...file scope?
-
 void init(){
   /* initialize db ram object */
-
   db_object.NPATH = 0;
   db_object.CLEAN = 0;
   int i = 0;
@@ -29,19 +23,15 @@ void init(){
     }
   }
 }
-
 int load(const char * dbfile){
   int writedb(const char*, int);
-
   FILE *pfile = fopen(dbfile,"rb");
   if(NULL == pfile){
     fprintf(stderr,"%s does not exist,will generate it automatically.\n",dbfile);
-
     /* use writedb funx to create a new pathmarker.db file */
     writedb(dbfile, 1); //write db_object to the file by force
     return(-1);
   }
-
   char line[MAX_PATHLEN];  int npath = 0;
   while((NULL != fgets(line,MAX_PATHLEN,pfile) && (npath<MAX_NPATH))){
     line[strlen(line)-1] = '\0'; /* chop the return char */
@@ -51,7 +41,6 @@ int load(const char * dbfile){
     /*this will not happen until u edit pathmark.db mannually */
     if (pmark == NULL || ppath ==NULL)
       continue;
-
     (db_object.pathdb)[npath][0]=(char*)malloc(sizeof(char)*strlen(pmark)+1);
     (db_object.pathdb)[npath][1]=(char*)malloc(sizeof(char)*strlen(ppath)+1);
     if ((db_object.pathdb)[npath][0] == NULL || (db_object.pathdb)[npath][1] == NULL){
@@ -66,16 +55,13 @@ int load(const char * dbfile){
   fclose(pfile);
   return(0);
 }
-
 /* add a record */
 int add(const char *mark,const char *path){
-
   /* check if the mark already exists,if it exists, just replace it */
   int pos(const char *pmark);
   int ind = pos(mark);
   if(ind != -1){
     free_record(ind);
-
     (db_object.pathdb)[ind][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
     (db_object.pathdb)[ind][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
     strcpy((db_object.pathdb)[ind][0],mark);
@@ -83,9 +69,7 @@ int add(const char *mark,const char *path){
     db_object.CLEAN = 1; //set flag, need to write back to db file
     return(0);
   }
-
   /* a new bookmark, try to append this mark */
-
   /* dbfile is full */
   if (db_object.NPATH  == MAX_NPATH ) {
     /*remove the oldest one;move forward and add the new record*/
@@ -97,7 +81,6 @@ int add(const char *mark,const char *path){
       for(;f<NFIELD;f++)
 	(db_object.pathdb)[j][f] = (db_object.pathdb)[j-1][f];
     }
-
     /* add new record */
     (db_object.pathdb)[0][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
     (db_object.pathdb)[0][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
@@ -109,13 +92,13 @@ int add(const char *mark,const char *path){
   /* move all records forward by one, add new record to the head*/
   else {
     int i = db_object.NPATH;
-int j = i;
-for(;j > 0;j--) {
-int f=0;
-for(;f<NFIELD;f++)
+    int j = i;
+    for(;j > 0;j--) {
+      int f=0;
+      for(;f<NFIELD;f++)
 	(db_object.pathdb)[j][f] = (db_object.pathdb)[j-1][f];
-}
-/* add new record */
+    }
+    /* add new record */
     (db_object.pathdb)[0][0]=(char*)malloc(sizeof(char)*strlen(mark)+1);
     (db_object.pathdb)[0][1]=(char*)malloc(sizeof(char)*strlen(path)+1);
     strcpy((db_object.pathdb)[0][0],mark);
@@ -126,15 +109,13 @@ for(;f<NFIELD;f++)
     db_object.CLEAN = 1; //set flag, need to write back to db file
     return(0);
   }
-
   /* there is something unconsiderible happened*/
   return(-1);
 }
-
 int writedb(const char *file, int force){
   /* write ram db object to file */
   if(db_object.CLEAN == 0  && force == 0) //CLEAN status, no need to write back,
-                                          //force is set to create db file with CLEAN(empty) db_object
+					  //force is set to create db file with CLEAN(empty) db_object
     return(0);
   int i = 0;
   FILE *pfile = fopen(file,"w");
@@ -162,7 +143,6 @@ int writedb(const char *file, int force){
   fclose(pfile);
   return(0);
 }
-
 int release(){
   int i = 0;
   for(;i < db_object.NPATH;i++){
@@ -173,7 +153,6 @@ int release(){
   }
   return(0);
 }
-
 int pos(const char *pmark){
   /* return the index of a mark */
   int i = 0;
@@ -184,7 +163,6 @@ int pos(const char *pmark){
   }
   return(-1);
 }
-
 const char* mark2path(const char *pmark){
   int pos(const char *pmark);
   int position = pos(pmark);
@@ -192,7 +170,6 @@ const char* mark2path(const char *pmark){
     return NULL;
   return((const char*) (db_object.pathdb)[position][1]);
 }
-
 const char* pos2path(int pos){
   if(pos > db_object.NPATH - 1 || pos < 0)
     return NULL;
@@ -209,7 +186,6 @@ void printdb(){
   fprintf(stdout,">>>>>>>>>>>>>>>>>>>>>>>\n");
   fprintf(stdout,"                   \n");
 }
-
 static int free_record(int index)
 {
   /*** this is a function used internally***/
@@ -225,7 +201,6 @@ static int free_record(int index)
   }
   return(0);
 }
-
 int rm(int pos)
 {
   if(-1 == free_record(pos))
@@ -241,7 +216,6 @@ int rm(int pos)
   int f = 0;
   for(;f<NFIELD;f++) 
     (db_object.pathdb)[j][f] = NULL;
-
   /*decreasing the record count*/
   db_object.NPATH -= 1;
   /* set write back flag */
@@ -250,7 +224,6 @@ int rm(int pos)
   /*we have done*/
   return(0);
 }
-
 int opendb(char *dbfname)
 {
   //return -1 for create a new database file
@@ -259,7 +232,6 @@ int opendb(char *dbfname)
   //load(read)
   return(load(dbfname));
 }
-
 int closedb(const char *dbfname)
 {
   //writedb
