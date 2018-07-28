@@ -235,10 +235,11 @@ int opendb(char *dbfname)
 int closedb(const char *dbfname)
 {
   //writedb
-  if( -1 == writedb(dbfname,0) ) {
+  int t = 0;
+  if(!( t = writedb(dbfname,0))) {
     fprintf(stderr, "writing database failed!\n");
   }
   //releasedb
   release();
-  return(0);
+  return(t);
 }
