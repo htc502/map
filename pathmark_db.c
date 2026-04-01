@@ -236,7 +236,7 @@ int closedb(const char *dbfname)
 {
   //writedb
   int t = 0;
-  if(!( t = writedb(dbfname,0))) {
+  if(( t = writedb(dbfname,0))) {
     fprintf(stderr, "writing database failed!\n");
   }
   //releasedb
